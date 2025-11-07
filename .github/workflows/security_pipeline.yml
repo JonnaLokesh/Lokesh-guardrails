@@ -21,6 +21,7 @@ jobs:
           severity: 'HIGH,CRITICAL'
           ignore-unfixed: true
           format: 'table'
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run Trivy vulnerability scan (JSON)
         uses: aquasecurity/trivy-action@master
@@ -30,6 +31,7 @@ jobs:
           ignore-unfixed: true
           format: 'json'
           output: 'trivy-results.json'
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Trivy JSON report
         uses: actions/upload-artifact@v4
@@ -44,12 +46,10 @@ jobs:
           working_directory: .
           format: json
           additional_args: --out=tfsec-results.json
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload tfsec compliance report
         uses: actions/upload-artifact@v4
         with:
           name: tfsec-results
           path: tfsec-results.json
-
-
-
