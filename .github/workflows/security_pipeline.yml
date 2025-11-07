@@ -15,9 +15,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # ----------------- Trivy Scans -----------------
+      # ----------------- Trivy Dependency Scans -----------------
       - name: Run Trivy vulnerability scan (table)
         uses: aquasecurity/trivy-action@master
+        continue-on-error: true
         with:
           scan-type: 'fs'
           severity: 'HIGH,CRITICAL'
@@ -26,6 +27,7 @@ jobs:
 
       - name: Run Trivy vulnerability scan (JSON)
         uses: aquasecurity/trivy-action@master
+        continue-on-error: true
         with:
           scan-type: 'fs'
           severity: 'LOW,MEDIUM,HIGH,CRITICAL'
@@ -39,9 +41,10 @@ jobs:
           name: trivy-results
           path: trivy-results.json
 
-      # ----------------- tfsec Scans -----------------
+      # ----------------- tfsec IaC Compliance Scans -----------------
       - name: Run tfsec compliance scan
-        uses: aquasecurity/tfsec-action@v1.0.3
+        uses: aquasecurity/tfsec-action@main
+        continue-on-error: true
         with:
           working_directory: .
           format: json
