@@ -10,12 +10,16 @@ jobs:
     name: Run Security Scans
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+      security-events: write
+
     steps:
-      # Step 1: Checkout Code
+      # Step 1: Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Step 2: Run Trivy Vulnerability Scan (Dependencies + Containers)
+      # Step 2: Run Trivy vulnerability scan (table)
       - name: Run Trivy vulnerability scan (table)
         uses: aquasecurity/trivy-action@master
         with:
@@ -24,7 +28,7 @@ jobs:
           ignore-unfixed: true
           format: 'table'
 
-      # Step 3: Run Trivy Vulnerability Scan (JSON Report)
+      # Step 3: Run Trivy vulnerability scan (JSON)
       - name: Run Trivy vulnerability scan (JSON)
         uses: aquasecurity/trivy-action@master
         with:
@@ -35,22 +39,20 @@ jobs:
           output: 'trivy-results.json'
         continue-on-error: true
 
-      # Step 4: Upload Trivy JSON Report
+      # Step 4: Upload Trivy JSON report
       - name: Upload Trivy JSON report
         uses: actions/upload-artifact@v4
         with:
           name: trivy-results
           path: trivy-results.json
 
-      # Step 5: Run tfsec IaC Compliance Scan
+      # Step 5: Run tfsec compliance scan (manual run command)
       - name: Run tfsec compliance scan
-        uses: aquasecurity/tfsec-action@v1.0.3
-        with:
-          format: json
-          output: tfsec-results.json
-        continue-on-error: true
+        run: |
+          echo "Running tfsec scan..."
+          tfsec . --format json --out tfsec-results.json || true
 
-      # Step 6: Upload tfsec JSON Report
+      # Step 6: Upload tfsec JSON report
       - name: Upload tfsec JSON report
         uses: actions/upload-artifact@v4
         with:
