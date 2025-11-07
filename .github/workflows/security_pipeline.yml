@@ -44,9 +44,9 @@ jobs:
       - name: Run tfsec compliance scan
         uses: aquasecurity/tfsec-action@v1.0.3
         with:
-          working-directory: .
+          working_directory: .
           format: json
-          out: tfsec-results.json
+          additional_args: --out=tfsec-results.json
 
       - name: Upload tfsec compliance report
         uses: actions/upload-artifact@v4
