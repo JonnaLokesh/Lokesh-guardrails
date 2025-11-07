@@ -14,5 +14,3 @@
 - security_pipeline.yml
 - Compliance scan summary
 - Guardrail documentation
-# Test Guardrail Protection
-hi
