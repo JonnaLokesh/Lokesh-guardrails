@@ -7,63 +7,52 @@ on:
 
 jobs:
   security-scan:
+    name: Run Security Scans
     runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      # Step 1: Checkout Code
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      # ----------------- Trivy Dependency Scans -----------------
+      # Step 2: Run Trivy Vulnerability Scan (Dependencies + Containers)
       - name: Run Trivy vulnerability scan (table)
         uses: aquasecurity/trivy-action@master
-        continue-on-error: true
         with:
           scan-type: 'fs'
           severity: 'HIGH,CRITICAL'
           ignore-unfixed: true
           format: 'table'
 
+      # Step 3: Run Trivy Vulnerability Scan (JSON Report)
       - name: Run Trivy vulnerability scan (JSON)
         uses: aquasecurity/trivy-action@master
-        continue-on-error: true
         with:
           scan-type: 'fs'
-          severity: 'LOW,MEDIUM,HIGH,CRITICAL'
+          severity: 'HIGH,CRITICAL'
           ignore-unfixed: true
           format: 'json'
           output: 'trivy-results.json'
+        continue-on-error: true
 
+      # Step 4: Upload Trivy JSON Report
       - name: Upload Trivy JSON report
         uses: actions/upload-artifact@v4
         with:
           name: trivy-results
           path: trivy-results.json
 
-      # ----------------- tfsec IaC Compliance Scans (CLI) -----------------
-      - name: Install tfsec
-        run: |
-          curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
-
+      # Step 5: Run tfsec IaC Compliance Scan
       - name: Run tfsec compliance scan
+        uses: aquasecurity/tfsec-action@v1.0.3
+        with:
+          format: json
+          output: tfsec-results.json
         continue-on-error: true
-        run: |
-          echo "Running tfsec scan..."
-          tfsec . --format json --out tfsec-results.json
 
-      - name: Upload tfsec compliance report
+      # Step 6: Upload tfsec JSON Report
+      - name: Upload tfsec JSON report
         uses: actions/upload-artifact@v4
         with:
           name: tfsec-results
           path: tfsec-results.json
-      - name: Run tfsec compliance scan
-
-      - name: Run tfsec compliance scan
-  uses: aquasecurity/tfsec-action@v1.0.3
-  with:
-    format: json
-    output: tfsec-results.json
-  continue-on-error: true
-
-
