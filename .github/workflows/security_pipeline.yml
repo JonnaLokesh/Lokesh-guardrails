@@ -41,14 +41,16 @@ jobs:
           name: trivy-results
           path: trivy-results.json
 
-      # ----------------- tfsec IaC Compliance Scans -----------------
+      # ----------------- tfsec IaC Compliance Scans (CLI) -----------------
+      - name: Install tfsec
+        run: |
+          curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
+
       - name: Run tfsec compliance scan
-        uses: aquasecurity/tfsec-action@main
         continue-on-error: true
-        with:
-          working_directory: .
-          format: json
-          additional_args: --out=tfsec-results.json
+        run: |
+          echo "Running tfsec scan..."
+          tfsec . --format json --out tfsec-results.json
 
       - name: Upload tfsec compliance report
         uses: actions/upload-artifact@v4
