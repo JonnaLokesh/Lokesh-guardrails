@@ -57,3 +57,10 @@ jobs:
         with:
           name: tfsec-results
           path: tfsec-results.json
+          - name: Run tfsec compliance scan
+  uses: aquasecurity/tfsec-action@v1.0.3
+  with:
+    format: json
+    output: tfsec-results.json
+  continue-on-error: true
+
