@@ -40,8 +40,9 @@ jobs:
         with:
           name: trivy-results
           path: trivy-results.json
+      
       - name: Run tfsec compliance scan
-        uses: aquasecurity/tfsec-action@v1
+        uses: aquasecurity/tfsec-action@v1.0.3
         with:
           working-directory: .
           format: json
@@ -52,4 +53,5 @@ jobs:
         with:
           name: tfsec-results
           path: tfsec-results.json
+
 
