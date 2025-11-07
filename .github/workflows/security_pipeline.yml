@@ -7,26 +7,23 @@ on:
 
 jobs:
   security-scan:
-    name: Trivy Vulnerability Scan
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the repository code
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      # Step 2: Run Trivy scan and show table output in the logs
+      # ----------------- Trivy Scans -----------------
       - name: Run Trivy vulnerability scan (table)
-        uses: aquasecurity/trivy-action@0.20.0
+        uses: aquasecurity/trivy-action@master
         with:
           scan-type: 'fs'
           severity: 'HIGH,CRITICAL'
           ignore-unfixed: true
           format: 'table'
 
-      # Step 3: Generate JSON report for documentation
       - name: Run Trivy vulnerability scan (JSON)
-        uses: aquasecurity/trivy-action@0.20.0
+        uses: aquasecurity/trivy-action@master
         with:
           scan-type: 'fs'
           severity: 'LOW,MEDIUM,HIGH,CRITICAL'
@@ -34,13 +31,13 @@ jobs:
           format: 'json'
           output: 'trivy-results.json'
 
-      # Step 4: Upload the JSON report as an artifact
       - name: Upload Trivy JSON report
         uses: actions/upload-artifact@v4
         with:
           name: trivy-results
           path: trivy-results.json
-      
+
+      # ----------------- tfsec Scans -----------------
       - name: Run tfsec compliance scan
         uses: aquasecurity/tfsec-action@v1.0.3
         with:
@@ -53,5 +50,6 @@ jobs:
         with:
           name: tfsec-results
           path: tfsec-results.json
+
 
 
