@@ -1,0 +1,23 @@
+name: Security Guardrail Check
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run basic syntax check
+        run: |
+          echo "Running syntax check..."
+          if grep -r "vulnerable_code" .; then
+            echo " Vulnerable code detected!"
+            exit 1
+          else
+            echo " No vulnerable code found."
+          fi
