@@ -16,8 +16,8 @@ jobs:
         run: |
           echo "Running syntax check..."
           if grep -r "vulnerable_code" .; then
-            echo "❌ Vulnerable code detected!"
+            echo " Vulnerable code detected!"
             exit 1
           else
-            echo "✅ No vulnerable code found."
+            echo " No vulnerable code found."
           fi
